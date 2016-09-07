@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>CyberPlay</title>
+</head>
+<style type="text/css">
+	body{
+		font-family: sans-serif;
+		margin:0;
+		padding: 0;
+		background: #F6F7F8;
+	}
+	#footer{
+		width: 100%;
+		height:50px;
+		background: #7d53de;	
+	}
+	.footer_title{
+		text-align: center;
+		color: white;
+		font-size: 25px;
+		position: relative;
+		top:10px;
+		left:10px;
+	}
+	#playlist li:hover{
+		cursor: pointer;
+	}
+</style>
+<body>
+	<div id="footer">
+	<span class="footer_title">CyberPlay</span>
+	</div>
+	<input type="file" webkitdirectory directory multiple mozdirectory id="files" name="file" />
+	<br>
+	<audio  id="player" controls></audio>
+	<button onclick="nextSong()" ><</button>
+	<button onclick="prevSong()" >></button>
+	<div>
+		<ol id="playlist">
+		</ol>
+	</div>
+	
+</body>
+<script>
+	var j=0;	//j is the index of the song played
+	var playlist=[]; //playlist contains the files uploaded
+	var player= document.getElementById('player')
+    var playlist_ol=document.getElementById('playlist');
+
+	function nextSong(){
+
+	}
+
+
+  function handleFileSelect(evt) {
+    // Reset progress indicator on new file selection.
+   
+  	playlist=[];
+   	j=0;
+    playlist_ol.innerHTML="";
+    for(var i=0;i<evt.target.files.length;i++){
+    		if(evt.target.files[i].size>4095 && 
+    			(evt.target.files[i].name.indexOf('mp3')!=-1 || evt.target.files[i].name.indexOf('ogg')!=-1)) {
+    			var li=document.createElement('li');
+    			li.url=window.URL.createObjectURL(evt.target.files[i]);
+    			li.onclick=function(e){
+    				player.setAttribute('src',e.target.url);
+    				player.play();
+    			}
+    			li.innerHTML=evt.target.files[i].name;
+    			playlist_ol.appendChild(li);
+    			playlist.push(evt.target.files[i]);
+			}
+    }
+    
+    player.setAttribute('src',window.URL.createObjectURL(playlist[j++]));
+    player.play();
+    player.onended=function(){
+    	    player.setAttribute('src',window.URL.createObjectURL(playlist[j++]));
+    		player.play();
+    }
+    document.getElementById('files').style('display','none');
+
+  }
+
+  document.getElementById('files').addEventListener('change', handleFileSelect, false);
+
+
+</script>
+</html>
